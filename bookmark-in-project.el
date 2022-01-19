@@ -249,7 +249,17 @@ using `default-directory' as a fallback."
             (when (< 1 lines-rel)
               (let ((lines-all (count-lines pos-best pos-next)))
                 (setq text
-                  (concat text " [" (number-to-string (/ (* 100 lines-rel) lines-all)) "%]")))))
+                  (concat
+                    text " ["
+                    (number-to-string
+                      ;; Avoid divide by zero for empty files.
+                      (cond
+                        ((zerop lines-all)
+                          0)
+                        (t
+                          (/ (* 100 lines-rel) lines-all))))
+                    "%]")))))
+
 
           text))
       (t ;; No context, show the percent in the file.
@@ -257,7 +267,16 @@ using `default-directory' as a fallback."
         ;; Otherwise there is no context given which seems strange.
         (let ((lines-rel (count-lines (point-min) pos)))
           (let ((lines-all (count-lines (point-min) (point-max))))
-            (concat "[" (number-to-string (/ (* 100 lines-rel) lines-all)) "%]")))))))
+            (concat
+              "["
+              (number-to-string
+                ;; Avoid divide by zero for empty files.
+                (cond
+                  ((zerop lines-all)
+                    0)
+                  (t
+                    (/ (* 100 lines-rel) lines-all))))
+              "%]")))))))
 
 (defun bookmark-in-project-name-default-with-line ()
   "Return the name used to create ."
