@@ -106,6 +106,11 @@ This is done without adjusting trailing slashes or following links."
 ;; ---------------------------------------------------------------------------
 ;; Internal Functions/Macros
 
+(defun bookmark-in-project--has-file-name-or-error ()
+  "Early exit when there is no buffer."
+  (unless buffer-file-name
+    (error "Buffer not visiting a file or directory")))
+
 (defun bookmark-in-project--repr-precent (value-fraction value-total)
   "Return a percentage string from VALUE-FRACTION in VALUE-TOTAL."
   (concat
@@ -694,6 +699,11 @@ only bookmarks on the current line will be considered."
 (defun bookmark-in-project-toggle ()
   "Create or delete a bookmark on the current line."
   (interactive)
+
+  ;; Don't go any further if this buffer doesn't have a file-name.
+  ;; This is only needed for setting bookmarks, navigation can use the default-directory.
+  (bookmark-in-project--has-file-name-or-error)
+
   (bookmark-maybe-load-default-file)
   ;; Only accept bookmarks on the current line.
   (let ((item-current (bookmark-in-project--find-at-point t)))
