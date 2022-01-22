@@ -731,9 +731,12 @@ only bookmarks on the current line will be considered."
 If optional argument NO-CONFIRM is non-nil, don't ask for
 confirmation."
   (interactive "P")
-  (when (or no-confirm (yes-or-no-p "Permanently delete all bookmarks in this project? "))
-    (bookmark-maybe-load-default-file)
-    (let ((proj-dir (bookmark-in-project--project-root-impl)))
+  (let ((proj-dir (bookmark-in-project--project-root-impl)))
+    (when
+      (or
+        no-confirm
+        (yes-or-no-p (format "Permanently delete bookmarks in this project [%S] ? " proj-dir)))
+      (bookmark-maybe-load-default-file)
       (let ((bm-list (bookmark-in-project--filter-by-project proj-dir bookmark-alist)))
         (when bm-list
           (bookmark-in-project--with-save-deferred
