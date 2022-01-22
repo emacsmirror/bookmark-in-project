@@ -110,10 +110,10 @@ The package is available in melpa as ``bookmark-in-project``, here is an example
      :commands (bookmark-in-project-jump
                 bookmark-in-project-jump-next
                 bookmark-in-project-jump-previous
-                bookmark-in-project-delete-all))
+                bookmark-in-project-delete-all)
 
-   ;; Example key bindings.
-   (global-set-key (kbd "M-n") 'bookmark-in-project-jump-next)
-   (global-set-key (kbd "M-p") 'bookmark-in-project-jump-previous)
-   (global-set-key (kbd "M-*") 'bookmark-in-project-toggle)
-   (global-set-key (kbd "M-o") 'bookmark-in-project-jump)
+     ;; Example key bindings.
+     :bind (("M-n" . bookmark-in-project-jump-next)
+            ("M-p" . bookmark-in-project-jump-previous)
+            ("M-*" . bookmark-in-project-toggle)
+            ("M-o" . bookmark-in-project-jump)))
