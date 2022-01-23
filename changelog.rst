@@ -5,6 +5,7 @@ Change Log
 
 - In development.
 
+  - 2022/01/23: Quiet noisy messages when toggling bookmarks.
   - 2022/01/23: Include the project path in the prompt to delete all bookmarks.
   - 2022/01/23: Fix error toggling a bookmark in a buffer without a file-name.
   - 2022/01/19: Fix bug inserting bookmarks into empty files.

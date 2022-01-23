@@ -123,6 +123,15 @@ This is done without adjusting trailing slashes or following links."
           (/ (* 100 value-fraction) value-total))))
     "%"))
 
+(defmacro bookmark-in-project--without-messages (&rest body)
+  "Run BODY with messages suppressed."
+  `
+  (let
+    (
+      (inhibit-message t)
+      (message-log-max nil))
+    ,@body))
+
 (defmacro bookmark-in-project--with-save-deferred (&rest body)
   "Execute BODY with WHERE advice on FN-ORIG temporarily enabled."
   `
@@ -710,7 +719,8 @@ only bookmarks on the current line will be considered."
     (cond
       (item-current
         (let ((name (car item-current)))
-          (bookmark-delete name)
+          ;; Quiet messages when `bookmark-save-flag' is 0.
+          (bookmark-in-project--without-messages (bookmark-delete name))
           ;; Message after to hide "Saved".
           (when bookmark-in-project-verbose-toggle
             (bookmark-in-project--message "deleted: %s"
@@ -718,8 +728,8 @@ only bookmarks on the current line will be considered."
                 (bookmark-in-project--name-abbrev-and-fontify proj-dir name))))))
       (t
         (let ((name (bookmark-in-project--name-impl bookmark-alist)))
-          ;; Message after to hide "Saved".
-          (bookmark-set name)
+          ;; Quiet messages when `bookmark-save-flag' is 0.
+          (bookmark-in-project--without-messages (bookmark-set name))
           (when bookmark-in-project-verbose-toggle
             (bookmark-in-project--message "added: %s"
               (let ((proj-dir (bookmark-in-project--project-root-impl)))
