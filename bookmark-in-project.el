@@ -242,7 +242,14 @@ using `default-directory' as a fallback."
               (setq pos-depth (1+ pos-depth))
               (push (car pair) result-stack))
             ((number-or-marker-p (setq mark (cdr pair)))
-              (let ((pos-test (marker-position mark)))
+              (let
+                (
+                  (pos-test
+                    (cond
+                      ((markerp mark)
+                        (marker-position mark))
+                      (t
+                        mark))))
                 (when (and (> pos-test pos-best) (> pos pos-test))
                   ;; Store result and it's parents.
                   (setq result (cons (car pair) result-stack))
@@ -275,7 +282,14 @@ using `default-directory' as a fallback."
               ((number-or-marker-p (setq mark (cdr pair)))
                 ;; Ensure the next item isn't nested.
                 (when (<= pos-depth pos-best-depth)
-                  (let ((pos-test (marker-position mark)))
+                  (let
+                    (
+                      (pos-test
+                        (cond
+                          ((markerp mark)
+                            (marker-position mark))
+                          (t
+                            mark))))
                     (when (and (> pos-next pos-test) (> pos-test pos))
                       (setq pos-next pos-test)))))))
           (t
