@@ -184,7 +184,12 @@ using `default-directory' as a fallback."
   ;; Ensure trailing slash, may not be the case for user-defined callbacks,
   ;; needed so it can be used as a prefix of a file without possibly
   ;; matching against other, longer directory names.
-  (file-name-as-directory (or (funcall bookmark-in-project-project-root) default-directory)))
+  ;;
+  ;; Canonicalized path is important to expand the directory
+  ;; (`~' for example, as is done for filenames).
+  (file-name-as-directory
+    (bookmark-in-project--canonicalize-path
+      (or (funcall bookmark-in-project-project-root) default-directory))))
 
 (defun bookmark-in-project--context-id-at-point (pos)
   "Return context text at POS (used for automatic bookmark names)."

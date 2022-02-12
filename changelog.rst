@@ -5,6 +5,7 @@ Change Log
 
 - In development.
 
+  - 2022/02/12: Fix bug matching project paths within the home directory.
   - 2022/02/07: Fix error creating a title from ``imenu`` for when positions were integers instead of markers.
   - 2022/02/01: Fix next/previous/jump commands not showing a useful error when run from buffers without a path.
   - 2022/01/27: Fix next/previous bookmark not correctly calculating the relative location to the point.
