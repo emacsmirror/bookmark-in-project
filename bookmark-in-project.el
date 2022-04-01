@@ -1039,7 +1039,7 @@ confirmation."
                 (setq bm-list (cdr bm-list))
                 (let ((name (car item)))
                   ;; Errors should not happen, even so - don't early exit if they do.
-                  (with-demoted-errors (bookmark-delete name)))))))))))
+                  (with-demoted-errors "%S" (bookmark-delete name)))))))))))
 
 (provide 'bookmark-in-project)
 ;;; bookmark-in-project.el ends here
