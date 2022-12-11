@@ -175,7 +175,11 @@ using `default-directory' as a fallback."
     (t
       (or
         (when buffer-file-name
-          (let ((vc-backend (ignore-errors (vc-responsible-backend buffer-file-name))))
+          (let
+            (
+              (vc-backend
+                (ignore-errors
+                  (vc-responsible-backend buffer-file-name))))
             (when vc-backend
               (vc-call-backend vc-backend 'root buffer-file-name))))))))
 
@@ -494,8 +498,7 @@ Argument DIRECTION represents the stepping direction (in -1 1)."
   (let ((bookmark-name-or-record (car item)))
     (condition-case _err
       (progn
-        (funcall
-          (or (bookmark-get-handler bookmark-name-or-record) 'bookmark-default-handler)
+        (funcall (or (bookmark-get-handler bookmark-name-or-record) 'bookmark-default-handler)
           (bookmark-get-bookmark bookmark-name-or-record))
         t)
       (error nil))))
@@ -1039,7 +1042,8 @@ confirmation."
                 (setq bm-list (cdr bm-list))
                 (let ((name (car item)))
                   ;; Errors should not happen, even so - don't early exit if they do.
-                  (with-demoted-errors "%S" (bookmark-delete name)))))))))))
+                  (with-demoted-errors "%S"
+                    (bookmark-delete name)))))))))))
 
 (provide 'bookmark-in-project)
 ;;; bookmark-in-project.el ends here
