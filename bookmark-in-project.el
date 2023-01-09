@@ -998,4 +998,8 @@ confirmation."
                    (bookmark-delete name)))))))))))
 
 (provide 'bookmark-in-project)
+;; Local Variables:
+;; fill-column: 99
+;; indent-tabs-mode: nil
+;; End:
 ;;; bookmark-in-project.el ends here
