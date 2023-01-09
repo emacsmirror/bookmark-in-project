@@ -218,7 +218,7 @@ using `default-directory' as a fallback."
         (setq pair (car-safe alist))
         (setq alist (cdr-safe alist))
         (cond
-         ((atom pair)) ;; Skip anything not a cons.
+         ((atom pair)) ; Skip anything not a cons.
          ((imenu--subalist-p pair)
           (setq imstack (cons alist imstack))
           (setq alist (cdr pair))
@@ -256,7 +256,7 @@ using `default-directory' as a fallback."
           (setq alist (cdr-safe alist))
           (setq pos-depth (1+ pos-depth))
           (cond
-           ((atom pair)) ;; Skip anything not a cons.
+           ((atom pair)) ; Skip anything not a cons.
            ((imenu--subalist-p pair)
             (setq imstack (cons alist imstack))
             (setq alist (cdr pair)))
@@ -278,18 +278,16 @@ using `default-directory' as a fallback."
 
     (cond
      (result
-      (let
-          ( ;; Join the list of
-           (text
-            (string-join
-             (mapcar
-              (lambda (text)
-                ;; Some `imenu' back-ends (lsp for example),
-                ;; add additional type info with properties.
-                ;; In our case the identifier is enough, so clip off any additional info.
-                (substring-no-properties text 0 (next-property-change 0 text)))
-              (reverse result))
-             ", ")))
+      (let ((text
+             (string-join
+              (mapcar
+               (lambda (text)
+                 ;; Some `imenu' back-ends (lsp for example),
+                 ;; add additional type info with properties.
+                 ;; In our case the identifier is enough, so clip off any additional info.
+                 (substring-no-properties text 0 (next-property-change 0 text)))
+               (reverse result))
+              ", ")))
 
         (let ((lines-rel (count-lines pos-best pos)))
           ;; No need to show the percentage if the point is exactly at the definition.
@@ -303,7 +301,7 @@ using `default-directory' as a fallback."
                      "]")))))
 
         text))
-     (t ;; No context, show the percent in the file.
+     (t ; No context, show the percent in the file.
       ;; NOTE: always show the percentage even when '0%'.
       ;; Otherwise there is no context given which seems strange.
       (let ((lines-rel (count-lines (point-min) pos)))
@@ -323,11 +321,10 @@ using `default-directory' as a fallback."
 (defun bookmark-in-project-name-default-fontify (name)
   "Apply face property to the bookmark NAME (for display only)."
   (save-match-data
-    (let
-        ( ;; Expect format as follows:
-         ;;   file/path.ext: <some content> [12%]
-         (content-beg 0)
-         (content-end (length name)))
+    ;; Expect format as follows:
+    ;;    file/path.ext: <some content> [12%]
+    (let ((content-beg 0)
+          (content-end (length name)))
       ;; Match: "/file/path: "
       (when (string-match "\\(.+\\)\\(: \\)" name)
         (add-face-text-property (match-beginning 1) (match-end 1) 'font-lock-constant-face t name)
@@ -816,16 +813,14 @@ Returning the next bookmark or nil."
             (bookmark-in-project--filter-by-project proj-dir bookmark-alist)
             #'bookmark-in-project--compare))
           (bm-current-bookmark-new nil))
-      (let
-          ( ;; Already sorted.
-           (bookmark-sort-flag nil)
+      (let ((bookmark-sort-flag nil) ; Already sorted.
 
-           (bookmark-alist (bookmark-in-project--name-abbrev-and-fontify-list proj-dir bm-list))
-           ;; Strip the prefix (so it's compatible).
-           (bookmark-current-bookmark
-            (bookmark-in-project--name-abbrev-or-nil
-             proj-dir
-             (bookmark-in-project--default-name-at-point))))
+            (bookmark-alist (bookmark-in-project--name-abbrev-and-fontify-list proj-dir bm-list))
+            ;; Strip the prefix (so it's compatible).
+            (bookmark-current-bookmark
+             (bookmark-in-project--name-abbrev-or-nil
+              proj-dir
+              (bookmark-in-project--default-name-at-point))))
 
         ;; Call a jump command, e.g. `bookmark-jump', `bookmark-jump-other-window' .. etc.
         (cond
