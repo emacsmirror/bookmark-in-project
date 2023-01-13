@@ -197,7 +197,7 @@ using `default-directory' as a fallback."
   (setq pos
         (save-excursion
           (goto-char pos)
-          (line-end-position)))
+          (pos-eol)))
 
   (let ((alist imenu--index-alist)
         (pair nil)
@@ -466,8 +466,8 @@ Argument DIRECTION represents the stepping direction (in -1 1)."
     (cons
      'position
      (pcase direction
-       (+1 (max (1+ (point)) (line-end-position)))
-       (-1 (min (1- (point)) (line-beginning-position)))
+       (+1 (max (1+ (point)) (pos-eol)))
+       (-1 (min (1- (point)) (pos-bol)))
        (_ (error "Invalid direction")))))))
 
 (defun bookmark-in-project--item-handle-or-nil (item)
@@ -689,9 +689,9 @@ Returning the next bookmark or nil."
         (pos-current
          (cond
           ((< direction 0)
-           (line-beginning-position))
+           (pos-bol))
           (t
-           (line-end-position)))))
+           (pos-eol)))))
 
     (while (and keep-searching (< skip pi-list-length))
       (let ((pi
@@ -863,8 +863,8 @@ only bookmarks on the current line will be considered."
       (let ((bm-list bookmark-alist)
             (pos-delta-best most-positive-fixnum)
             (item-found nil)
-            (bol (line-beginning-position))
-            (eol (line-end-position)))
+            (bol (pos-bol))
+            (eol (pos-eol)))
         (while bm-list
           (let ((item (car bm-list)))
             (setq bm-list (cdr bm-list))
