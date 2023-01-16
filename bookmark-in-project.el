@@ -311,10 +311,7 @@ using `default-directory' as a fallback."
             (let ((lines-all (count-lines pos-best pos-next)))
               (setq text
                     (concat
-                     text
-                     " ["
-                     (bookmark-in-project--repr-precent lines-rel lines-all)
-                     "]")))))
+                     text " [" (bookmark-in-project--repr-precent lines-rel lines-all) "]")))))
 
         text))
      (t ; No context, show the percent in the file.
@@ -355,11 +352,8 @@ using `default-directory' as a fallback."
       (let ((delimit-iter content-beg))
         (while (string-match "[[:punct:]]+" name delimit-iter)
           (add-face-text-property
-           (match-beginning 0)
-           (setq delimit-iter (match-end 0))
-           'font-lock-delimit-face
-           t
-           name)))))
+           (match-beginning 0) (setq delimit-iter (match-end 0)) 'font-lock-delimit-face
+           t name)))))
   name)
 
 (defun bookmark-in-project--name-ensure-unique (name bm-list)
@@ -791,12 +785,10 @@ Returning the next bookmark or nil."
                                              (t
                                               "next"))
                                             (1+ (bookmark-in-project--calc-global-index
-                                                 pi-list
-                                                 pi))
+                                                 pi-list pi))
                                             (length bm-list)
                                             (bookmark-in-project--name-abbrev-and-fontify
-                                             proj-dir
-                                             name)
+                                             proj-dir name)
                                             (cond
                                              ((zerop skip)
                                               "")
@@ -835,8 +827,7 @@ Returning the next bookmark or nil."
             ;; Strip the prefix (so it's compatible).
             (bookmark-current-bookmark
              (bookmark-in-project--name-abbrev-or-nil
-              proj-dir
-              (bookmark-in-project--default-name-at-point))))
+              proj-dir (bookmark-in-project--default-name-at-point))))
 
         ;; Call a jump command, e.g. `bookmark-jump', `bookmark-jump-other-window' .. etc.
         (cond
@@ -858,9 +849,7 @@ Returning the next bookmark or nil."
         (when bookmark-current-bookmark
           (setq bm-current-bookmark-new
                 (bookmark-in-project--remap-name
-                 bookmark-alist
-                 bm-list
-                 bookmark-current-bookmark))))
+                 bookmark-alist bm-list bookmark-current-bookmark))))
 
       ;; Set the expanded name back.
       (when bm-current-bookmark-new
@@ -978,8 +967,7 @@ only bookmarks on the current line will be considered."
           (bookmark-in-project--message "deleted: %s"
                                         (let ((proj-dir (bookmark-in-project--project-root-impl)))
                                           (bookmark-in-project--name-abbrev-and-fontify
-                                           proj-dir
-                                           name))))))
+                                           proj-dir name))))))
      (t
       (let ((name (bookmark-in-project--name-impl bookmark-alist)))
         ;; Quiet messages when `bookmark-save-flag' is 0.
@@ -988,8 +976,7 @@ only bookmarks on the current line will be considered."
           (bookmark-in-project--message "added: %s"
                                         (let ((proj-dir (bookmark-in-project--project-root-impl)))
                                           (bookmark-in-project--name-abbrev-and-fontify
-                                           proj-dir
-                                           name)))))))))
+                                           proj-dir name)))))))))
 
 ;;;###autoload
 (defun bookmark-in-project-delete-all (&optional no-confirm)
