@@ -317,9 +317,9 @@ using `default-directory' as a fallback."
      (t ; No context, show the percent in the file.
       ;; NOTE: always show the percentage even when '0%'.
       ;; Otherwise there is no context given which seems strange.
-      (let ((lines-rel (count-lines (point-min) pos)))
-        (let ((lines-all (count-lines (point-min) (point-max))))
-          (concat "[" (bookmark-in-project--repr-precent lines-rel lines-all) "]")))))))
+      (let ((lines-rel (count-lines (point-min) pos))
+            (lines-all (count-lines (point-min) (point-max))))
+        (concat "[" (bookmark-in-project--repr-precent lines-rel lines-all) "]"))))))
 
 (defun bookmark-in-project-name-default-with-line ()
   "Return the name used to create ."
@@ -363,11 +363,10 @@ using `default-directory' as a fallback."
 
   (let ((name-ls-exists (list)))
     (while bm-list
-      (let ((item (car bm-list)))
-        (setq bm-list (cdr bm-list))
-        (let ((name-test (car item)))
-          (when (string-prefix-p name name-test)
-            (push name-test name-ls-exists)))))
+      (let* ((item (pop bm-list))
+             (name-test (car item)))
+        (when (string-prefix-p name name-test)
+          (push name-test name-ls-exists))))
     (let ((name-unique name))
       (let ((index 1))
         (while (member name-unique name-ls-exists)
@@ -418,8 +417,7 @@ Argument PROJ-DIR may be used for abbreviation."
   "Filter BM-LIST by PROJ-DIR."
   (let ((bm-list-filter (list)))
     (while bm-list
-      (let ((item (car bm-list)))
-        (setq bm-list (cdr bm-list))
+      (let ((item (pop bm-list)))
         (when (string-prefix-p proj-dir (bookmark-in-project--item-get-filename item))
           (push item bm-list-filter))))
     bm-list-filter))
@@ -448,8 +446,7 @@ Note that if the file is not opened, it's assumed not to be narrowed."
   "Filter BM-LIST, removing any items that are narrowed."
   (let ((bm-list-filter (list)))
     (while bm-list
-      (let ((item (car bm-list)))
-        (setq bm-list (cdr bm-list))
+      (let ((item (pop bm-list)))
         (when (bookmark-in-project--item-is-visible item)
           (push item bm-list-filter))))
     bm-list-filter))
@@ -565,16 +562,16 @@ When it's an integer it is, and the value of `invalid' will set."
   (let ((pi-pos-cell (cdr pi)))
     ;; Not yet initialized.
     (when (null (car pi-pos-cell))
-      (let ((item (car pi)))
-        (let ((pos (bookmark-in-project--item-get-position-or-nil item)))
-          (cond
-           (pos
-            ;; Set the position and mark as valid.
-            (setcar pi-pos-cell pos))
-           (t
-            ;; Set the position to the
-            (setcar pi-pos-cell (alist-get 'position item 1))
-            (setcdr pi-pos-cell t))))))))
+      (let* ((item (car pi))
+             (pos (bookmark-in-project--item-get-position-or-nil item)))
+        (cond
+         (pos
+          ;; Set the position and mark as valid.
+          (setcar pi-pos-cell pos))
+         (t
+          ;; Set the position to the
+          (setcar pi-pos-cell (alist-get 'position item 1))
+          (setcdr pi-pos-cell t)))))))
 
 (defun bookmark-in-project--pretty-item-ensure-position-for-list (pi-list)
   "Ensure all items in PI-LIST have their positions initialized."
@@ -871,8 +868,7 @@ only bookmarks on the current line will be considered."
             (bol (pos-bol))
             (eol (pos-eol)))
         (while bm-list
-          (let ((item (car bm-list)))
-            (setq bm-list (cdr bm-list))
+          (let ((item (pop bm-list)))
             (when (string-equal current-filename (bookmark-in-project--item-get-filename item))
               (let ((pos (bookmark-in-project--item-get-position item)))
                 (when (cond
@@ -890,11 +886,8 @@ only bookmarks on the current line will be considered."
   "Translate NAME from it's value in BM-LIST-SRC to it's value in BM-LIST-DST."
   (let ((result name))
     (while bm-list-src
-      (let ((item-src (car bm-list-src))
-            (item-dst (car bm-list-dst)))
-
-        (setq bm-list-src (cdr bm-list-src))
-        (setq bm-list-dst (cdr bm-list-dst))
+      (let ((item-src (pop bm-list-src))
+            (item-dst (pop bm-list-dst)))
 
         (when (string-equal name (car item-src))
           (setq result (car item-dst))
@@ -993,12 +986,11 @@ confirmation."
         (when bm-list
           (bookmark-in-project--with-save-deferred
            (while bm-list
-             (let ((item (car bm-list)))
-               (setq bm-list (cdr bm-list))
-               (let ((name (car item)))
-                 ;; Errors should not happen, even so - don't early exit if they do.
-                 (with-demoted-errors "%S"
-                   (bookmark-delete name)))))))))))
+             (let* ((item (pop bm-list))
+                    (name (car item)))
+               ;; Errors should not happen, even so - don't early exit if they do.
+               (with-demoted-errors "%S"
+                 (bookmark-delete name))))))))))
 
 (provide 'bookmark-in-project)
 ;; Local Variables:
