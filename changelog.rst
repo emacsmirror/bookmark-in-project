@@ -3,7 +3,8 @@
 Change Log
 ##########
 
-- In development.
+- Version 0.2 (2023/06/04)
+
   - 2023/06/04: Fix #2 allow jumping to bookmarks from ``dired``.
   - 2023/06/04: Use the default directory when the buffer has no file name for VC root look-ups.
   - 2022/02/12: Fix bug matching project paths within the home directory.
@@ -15,6 +16,6 @@ Change Log
   - 2022/01/23: Fix error toggling a bookmark in a buffer without a file-name.
   - 2022/01/19: Fix bug inserting bookmarks into empty files.
 
-- Version 0.1 (2022-01-02)
+- Version 0.1 (2022/01/02)
 
   Initial release.
