@@ -172,20 +172,19 @@ where the first argument is always ELEMENT, the second is a member of XS."
 
 (defun bookmark-in-project-project-root-default ()
   "Function to find the project root from the current buffer.
-This checks `ffip', `projectile' & `vc' root,
-using `default-directory' as a fallback."
+This checks `ffip', `projectile' & `vc' root."
   (cond
    ((fboundp 'ffip-project-root)
     (funcall #'ffip-project-root))
    ((fboundp 'projectile-project-root)
     (funcall #'projectile-project-root))
    (t
-    (or (when buffer-file-name
-          (let ((vc-backend
-                 (ignore-errors
-                   (vc-responsible-backend buffer-file-name))))
-            (when vc-backend
-              (vc-call-backend vc-backend 'root buffer-file-name))))))))
+    (when buffer-file-name
+      (let ((vc-backend
+             (ignore-errors
+               (vc-responsible-backend buffer-file-name))))
+        (when vc-backend
+          (vc-call-backend vc-backend 'root buffer-file-name)))))))
 
 (defun bookmark-in-project--project-root-impl ()
   "Return the project directory (or default)."
