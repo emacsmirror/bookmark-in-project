@@ -4,7 +4,7 @@ Change Log
 ##########
 
 - In development.
-
+  - 2023/06/04: Use the default directory when the buffer has no file name for VC root look-ups.
   - 2022/02/12: Fix bug matching project paths within the home directory.
   - 2022/02/07: Fix error creating a title from ``imenu`` for when positions were integers instead of markers.
   - 2022/02/01: Fix next/previous/jump commands not showing a useful error when run from buffers without a path.

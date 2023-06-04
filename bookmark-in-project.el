@@ -179,12 +179,15 @@ This checks `ffip', `projectile' & `vc' root."
    ((fboundp 'projectile-project-root)
     (funcall #'projectile-project-root))
    (t
-    (when buffer-file-name
-      (let ((vc-backend
-             (ignore-errors
-               (vc-responsible-backend buffer-file-name))))
-        (when vc-backend
-          (vc-call-backend vc-backend 'root buffer-file-name)))))))
+    ;; The default directory is used in `dired',
+    ;; so it's useful to check this as a possible root.
+    (let ((path-ref (or buffer-file-name default-directory)))
+      (when path-ref
+        (let ((vc-backend
+               (ignore-errors
+                 (vc-responsible-backend path-ref))))
+          (when vc-backend
+            (vc-call-backend vc-backend 'root path-ref))))))))
 
 (defun bookmark-in-project--project-root-impl ()
   "Return the project directory (or default)."
