@@ -4,6 +4,7 @@ Change Log
 ##########
 
 - In development.
+  - 2023/06/04: Fix #2 allow jumping to bookmarks from ``dired``.
   - 2023/06/04: Use the default directory when the buffer has no file name for VC root look-ups.
   - 2022/02/12: Fix bug matching project paths within the home directory.
   - 2022/02/07: Fix error creating a title from ``imenu`` for when positions were integers instead of markers.
