@@ -816,9 +816,8 @@ Returning the next bookmark or nil."
   "Run a jump COMMAND with project limited context."
   (let ((proj-dir (bookmark-in-project--project-root-impl)))
     (let ((bm-list
-           (sort
-            (bookmark-in-project--filter-by-project proj-dir bookmark-alist)
-            #'bookmark-in-project--compare))
+           (sort (bookmark-in-project--filter-by-project proj-dir bookmark-alist)
+                 #'bookmark-in-project--compare))
           (bm-current-bookmark-new nil))
       (let ((bookmark-sort-flag nil) ; Already sorted.
 
