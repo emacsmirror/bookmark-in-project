@@ -691,10 +691,6 @@ Returning the next bookmark or nil."
              (bookmark-in-project--step-any-impl pi-list direction filepath-current pos-current)))
         (cond
          (pi
-          ;; In practice this will be true, call this more for correctness.
-          ;; To ensure values are properly set.
-          (bookmark-in-project--pretty-item-from-bookmark pi)
-
           (pcase-let ((`(,item . (,pos . ,invalid)) pi))
             (cond
              (invalid
