@@ -76,6 +76,7 @@ A nil return value will fall back to the `default-directory'."
   "Return the canonical PATH.
 
 This is done without adjusting trailing slashes or following links."
+  (declare (important-return-value t))
   ;; Some pre-processing on `path' since it may contain the user path
   ;; or be relative to the default directory.
   ;;
@@ -95,6 +96,7 @@ This is done without adjusting trailing slashes or following links."
 Optional ARGS, may contain :test keyword argument,
 it's value is used instead of `equal' for comparison,
 where the first argument is always ELEMENT, the second is a member of XS."
+  (declare (important-return-value t))
   (let ((index 0)
         (test-fn (or (plist-get args :test) #'equal)))
     (while (and xs (not (funcall test-fn element (car xs))))
@@ -107,6 +109,7 @@ where the first argument is always ELEMENT, the second is a member of XS."
 Optional ARGS, may contain :test keyword argument,
 it's value is used instead of `equal' for comparison,
 where the first argument is always ELEMENT, the second is a member of XS."
+  (declare (important-return-value t))
   (let ((xs-length (length xs))
         (index 0)
         (test-fn (or (plist-get args :test) #'equal)))
@@ -120,11 +123,13 @@ where the first argument is always ELEMENT, the second is a member of XS."
 
 (defun bookmark-in-project--has-file-name-or-error ()
   "Early exit when there is no buffer."
+  (declare (important-return-value nil))
   (unless buffer-file-name
     (error "Buffer not visiting a file or directory")))
 
 (defun bookmark-in-project--repr-precent (value-fraction value-total)
   "Return a percentage string from VALUE-FRACTION in VALUE-TOTAL."
+  (declare (important-return-value t))
   (concat
    (number-to-string
     ;; Avoid divide by zero for empty files.
@@ -151,12 +156,14 @@ where the first argument is always ELEMENT, the second is a member of XS."
 
 (defun bookmark-in-project--message (fmt &rest args)
   "Message wrapper, forwards FMT, ARGS to message."
+  (declare (important-return-value nil))
   (let ((message-log-max nil))
     (apply #'message (concat "Bookmark " fmt) args)))
 
 (defun bookmark-in-project-project-root-default ()
   "Function to find the project root from the current buffer.
 This checks `ffip', `projectile' & `vc' root."
+  (declare (important-return-value t))
   (cond
    ((fboundp 'ffip-project-root)
     (funcall #'ffip-project-root))
@@ -175,6 +182,7 @@ This checks `ffip', `projectile' & `vc' root."
 
 (defun bookmark-in-project--project-root-impl ()
   "Return the project directory (or default)."
+  (declare (important-return-value t))
   ;; Ensure trailing slash, may not be the case for user-defined callbacks,
   ;; needed so it can be used as a prefix of a file without possibly
   ;; matching against other, longer directory names.
@@ -187,6 +195,7 @@ This checks `ffip', `projectile' & `vc' root."
 
 (defun bookmark-in-project--context-id-at-point (pos)
   "Return context text at POS (used for automatic bookmark names)."
+  (declare (important-return-value t))
   ;; Ensure `imenu--index-alist' is populated.
   (condition-case-unless-debug err
       ;; Note that in some cases a file will fail to parse,
@@ -309,16 +318,19 @@ This checks `ffip', `projectile' & `vc' root."
 
 (defun bookmark-in-project-name-default-with-line ()
   "Return the name used to create ."
+  (declare (important-return-value t))
   (let ((filepath (bookmark-in-project--canonicalize-path (buffer-file-name))))
     (format "%s: %d" filepath (line-number-at-pos (point) t))))
 
 (defun bookmark-in-project-name-default-with-context ()
   "Return the name used to create ."
+  (declare (important-return-value t))
   (let ((filepath (bookmark-in-project--canonicalize-path (buffer-file-name))))
     (format "%s: %s" filepath (bookmark-in-project--context-id-at-point (point)))))
 
 (defun bookmark-in-project-name-default-fontify (name)
   "Apply face property to the bookmark NAME (for display only)."
+  (declare (important-return-value t))
   (save-match-data
     ;; Expect format as follows:
     ;;    file/path.ext: <some content> [12%]
@@ -344,6 +356,7 @@ This checks `ffip', `projectile' & `vc' root."
 
 (defun bookmark-in-project--name-ensure-unique (name bm-list)
   "Ensure NAME is unique in BM-LIST, returning the unique name."
+  (declare (important-return-value t))
   ;; Remove the number suffix (so there is no chance we add multiple).
   (setq name (replace-regexp-in-string "~[[:digit:]]+'" "" name))
 
@@ -362,12 +375,14 @@ This checks `ffip', `projectile' & `vc' root."
 
 (defun bookmark-in-project--name-impl (bm-list)
   "Return a new name (unique in BM-LIST)."
+  (declare (important-return-value t))
   (bookmark-in-project--name-ensure-unique
    (or (funcall bookmark-in-project-name) (bookmark-in-project-name-default-with-line)) bm-list))
 
 
 (defun bookmark-in-project--name-abbrev (proj-dir name)
   "Abbreviate NAME (in this case, strip PROJ-DIR)."
+  (declare (important-return-value t))
   (cond
    ((string-prefix-p proj-dir name)
     (substring name (length proj-dir) nil))
@@ -377,6 +392,7 @@ This checks `ffip', `projectile' & `vc' root."
 (defun bookmark-in-project--name-abbrev-or-nil (proj-dir name)
   "A version of `bookmark-in-project--name-abbrev' that accepts NAME as NIL.
 See `bookmark-in-project--name-abbrev' for PROJ-DIR docs."
+  (declare (important-return-value t))
   (cond
    (name
     (bookmark-in-project--name-abbrev proj-dir name))
@@ -386,6 +402,7 @@ See `bookmark-in-project--name-abbrev' for PROJ-DIR docs."
 (defun bookmark-in-project--name-abbrev-and-fontify (proj-dir name)
   "Return a copy of NAME, abbreviated & optionally with the face property set.
 Argument PROJ-DIR may be used for abbreviation."
+  (declare (important-return-value t))
 
   ;; Strip the project prefix (for brief/convenient display).
   (setq name (bookmark-in-project--name-abbrev proj-dir name))
@@ -401,6 +418,7 @@ Argument PROJ-DIR may be used for abbreviation."
 
 (defun bookmark-in-project--filter-by-project (proj-dir bm-list)
   "Filter BM-LIST by PROJ-DIR."
+  (declare (important-return-value t))
   (let ((bm-list-filter (list)))
     (while bm-list
       (let ((item (pop bm-list)))
@@ -412,6 +430,7 @@ Argument PROJ-DIR may be used for abbreviation."
 (defun bookmark-in-project--item-is-visible (item)
   "Return t if ITEM is visible (not narrowed).
 Note that if the file is not opened, it's assumed not to be narrowed."
+  (declare (important-return-value t))
   (let ((filename (abbreviate-file-name (bookmark-in-project--item-get-filename item)))
         (visible t))
     (let ((buf (get-file-buffer filename)))
@@ -430,6 +449,7 @@ Note that if the file is not opened, it's assumed not to be narrowed."
 
 (defun bookmark-in-project--filter-by-narrowing (bm-list)
   "Filter BM-LIST, removing any items that are narrowed."
+  (declare (important-return-value t))
   (let ((bm-list-filter (list)))
     (while bm-list
       (let ((item (pop bm-list)))
@@ -440,6 +460,7 @@ Note that if the file is not opened, it's assumed not to be narrowed."
 (defun bookmark-in-project--name-abbrev-and-fontify-list (proj-dir bm-list)
   "Apply faces to all items in BM-LIST.
 Argument PROJ-DIR may be used for abbreviation."
+  (declare (important-return-value t))
   (mapcar
    (lambda (item)
      (cons (bookmark-in-project--name-abbrev-and-fontify proj-dir (car item)) (cdr item)))
@@ -452,6 +473,7 @@ Argument PROJ-DIR may be used for abbreviation."
 (defun bookmark-in-project--placeholder-item (direction)
   "Create a fake bookmark item for the purpose of comparison.
 Argument DIRECTION represents the stepping direction (in -1 1)."
+  (declare (important-return-value t))
   (cons
    "<fake-bookmark>"
    (list
@@ -465,6 +487,7 @@ Argument DIRECTION represents the stepping direction (in -1 1)."
 
 (defun bookmark-in-project--item-handle-or-nil (item)
   "Jump to ITEM, returning non-nil on success."
+  (declare (important-return-value t))
   (let ((bookmark-name-or-record (car item)))
     (condition-case _err
         (progn
@@ -476,6 +499,7 @@ Argument DIRECTION represents the stepping direction (in -1 1)."
 
 (defun bookmark-in-project--item-get-filename (item)
   "Return the filename from a bookmark (ITEM)."
+  (declare (important-return-value t))
   (let ((filepath
          (or (alist-get 'filename item)
              ;; Filename from the buffer.
@@ -494,6 +518,7 @@ Argument DIRECTION represents the stepping direction (in -1 1)."
   "Return the position of bookmark ITEM.
 Note that this must only run on the for bookmarks in the current buffer,
 otherwise it will switch the buffer."
+  (declare (important-return-value t))
   ;; Note that edits to the document mean: (alist-get 'position item)
   ;; May not reflect the location after the context has been used to resolve the actual point.
   ;; For this reason, the actual jump call is needed.
@@ -507,6 +532,7 @@ otherwise it will switch the buffer."
   "Return the position of bookmark ITEM.
 Note that this must only run on the for bookmarks in the current buffer,
 otherwise it will switch the buffer."
+  (declare (important-return-value t))
   ;; Note that edits to the document mean: (alist-get 'position item)
   ;; May not reflect the location after the context has been used to resolve the actual point.
   ;; For this reason, the actual jump call is needed.
@@ -519,6 +545,7 @@ otherwise it will switch the buffer."
 
 (defun bookmark-in-project--compare (a b)
   "Return t when A is less than B."
+  (declare (important-return-value t))
   (let ((a-fn (bookmark-in-project--item-get-filename a))
         (b-fn (bookmark-in-project--item-get-filename b)))
     (cond
@@ -541,10 +568,12 @@ otherwise it will switch the buffer."
   "Return a pretty bookmark from ITEM: (item . (position . invalid)).
 When the `position' is nil, it's not yet initialized.
 When it's an integer it is, and the value of `invalid' will set."
+  (declare (important-return-value t))
   (cons item (cons nil nil)))
 
 (defun bookmark-in-project--pretty-item-ensure-position (pi)
   "Initialize the position PI as needed."
+  (declare (important-return-value nil))
   (let ((pi-pos-cell (cdr pi)))
     ;; Not yet initialized.
     (when (null (car pi-pos-cell))
@@ -561,17 +590,20 @@ When it's an integer it is, and the value of `invalid' will set."
 
 (defun bookmark-in-project--pretty-item-ensure-position-for-list (pi-list)
   "Ensure all items in PI-LIST have their positions initialized."
+  (declare (important-return-value nil))
   (while pi-list
     (let ((pi (pop pi-list)))
       (bookmark-in-project--pretty-item-ensure-position pi))))
 
 (defun bookmark-in-project--pretty-items-from-list (bm-list)
   "Return a list of pretty items from BM-LIST."
+  (declare (important-return-value t))
   (mapcar #'bookmark-in-project--pretty-item-from-bookmark bm-list))
 
 (defun bookmark-in-project--pretty-items-by-file-vector (pi-list &optional extra-files)
   "Return a sorted vector of `(file-path . pi-list)' pairs from PI-LIST.
 Optionally include EXTRA-FILES (dummy files useful for ordering)."
+  (declare (important-return-value t))
   (let ((filepath-pi-list-pairs nil)
         (files-map (make-hash-table :test #'equal)))
     (while extra-files
@@ -593,6 +625,7 @@ Optionally include EXTRA-FILES (dummy files useful for ordering)."
 
 (defun bookmark-in-project--pi-list-sorted-by-pos (pi-list)
   "Return PI-LIST sorted by position."
+  (declare (important-return-value t))
   (bookmark-in-project--pretty-item-ensure-position-for-list pi-list)
   ;; Sort by fallback position.
   (sort pi-list (lambda (a b) (< (cadr a) (cadr b)))))
@@ -601,6 +634,7 @@ Optionally include EXTRA-FILES (dummy files useful for ordering)."
   "Return the next/previous bookmark based on DIRECTION in PI-LIST.
 Arguments FILEPATH-CURRENT & POS-CURRENT are used as a reference.
 When no bookmark is found in the buffer, return nil."
+  (declare (important-return-value t))
   ;; Take care, `filepath-current' and `pos-current' may not be the current buffer
   ;; so avoid (point-min) or anything that relies on the current buffers values.
   (let ((pi-list-local (list))
@@ -634,6 +668,7 @@ When no bookmark is found in the buffer, return nil."
 (defun bookmark-in-project--step-the-buffer (pi-list direction filepath-current)
   "Step into a buffer in PI-LIST along DIRECTION relative to FILEPATH-CURRENT.
 Returning the next bookmark or nil."
+  (declare (important-return-value t))
   (let* ((pi-best nil)
          (filepath-pi-list-pairs
           (bookmark-in-project--pretty-items-by-file-vector pi-list (list filepath-current)))
@@ -661,6 +696,7 @@ Returning the next bookmark or nil."
 
 (defun bookmark-in-project--step-any-impl (pi-list direction filepath-current pos-current)
   "Step along DIRECTION in PI-LIST relative to FILEPATH-CURRENT & POS-CURRENT."
+  (declare (important-return-value t))
   (or (bookmark-in-project--step-in-buffer pi-list direction filepath-current pos-current)
       (bookmark-in-project--step-the-buffer pi-list direction filepath-current)
       ;; When there is only a single buffer, wrap back around to the start.
@@ -674,6 +710,7 @@ Returning the next bookmark or nil."
 
 (defun bookmark-in-project--step-any (pi-list direction)
   "Step along DIRECTION in PI-LIST relative to the current buffer & position."
+  (declare (important-return-value t))
   (let ((keep-searching t)
         (skip 0)
         (pi-best nil)
@@ -706,6 +743,7 @@ Returning the next bookmark or nil."
 
 (defun bookmark-in-project--calc-global-index (pi-list pi)
   "Calculate the global index for PI in PI-LIST."
+  (declare (important-return-value t))
   (let* ((filepath-item (bookmark-in-project--item-get-filename (car pi)))
          (filepath-pi-list-pairs (bookmark-in-project--pretty-items-by-file-vector pi-list))
          (filepath-bm-list-pairs-len (length filepath-pi-list-pairs))
@@ -732,6 +770,7 @@ Returning the next bookmark or nil."
 
 (defun bookmark-in-project--default-name-at-point ()
   "Return the default name to use (based on surrounding context)."
+  (declare (important-return-value t))
   (let ((item (bookmark-in-project--find-at-point nil)))
     (cond
      (item
@@ -745,6 +784,7 @@ Returning the next bookmark or nil."
 
 (defun bookmark-in-project--jump-direction-impl (proj-dir bm-list direction)
   "Step bookmark in DIRECTION direction in PROJ-DIR & BM-LIST."
+  (declare (important-return-value t))
 
   (let ((pi-list (bookmark-in-project--pretty-items-from-list bm-list)))
     ;; Track the number of failed attempts (report this when verbose).
@@ -782,6 +822,7 @@ Returning the next bookmark or nil."
 
 (defun bookmark-in-project--jump-direction (direction)
   "Jump between bookmarks in DIRECTION (+1/-1)."
+  (declare (important-return-value nil))
   (let ((proj-dir (bookmark-in-project--project-root-impl)))
     (let ((bm-list
            (bookmark-in-project--filter-by-narrowing
@@ -794,6 +835,7 @@ Returning the next bookmark or nil."
 
 (defun bookmark-in-project--jump-impl (command)
   "Run a jump COMMAND with project limited context."
+  (declare (important-return-value nil))
   (let ((proj-dir (bookmark-in-project--project-root-impl)))
     (let ((bm-list
            (sort (bookmark-in-project--filter-by-project proj-dir bookmark-alist)
@@ -837,6 +879,7 @@ Returning the next bookmark or nil."
   "Return the closest bookmark to the current point.
 Argument CURRENT-LINE-ONLY when non-nil,
 only bookmarks on the current line will be considered."
+  (declare (important-return-value t))
   (let ((current-filename
          (bookmark-in-project--item-get-filename (bookmark-in-project--placeholder-item 1))))
     (cond
@@ -865,6 +908,7 @@ only bookmarks on the current line will be considered."
 
 (defun bookmark-in-project--remap-name (bm-list-src bm-list-dst name)
   "Translate NAME from it's value in BM-LIST-SRC to it's value in BM-LIST-DST."
+  (declare (important-return-value t))
   (let ((result name))
     (while bm-list-src
       (let ((item-src (pop bm-list-src))
@@ -882,6 +926,7 @@ only bookmarks on the current line will be considered."
 ;;;###autoload
 (defun bookmark-in-project-jump-next ()
   "Jump to the next bookmark."
+  (declare (important-return-value nil))
   (interactive)
   (bookmark-in-project--has-file-name-or-error)
   (bookmark-maybe-load-default-file)
@@ -890,6 +935,7 @@ only bookmarks on the current line will be considered."
 ;;;###autoload
 (defun bookmark-in-project-jump-previous ()
   "Jump to the previous bookmark."
+  (declare (important-return-value nil))
   (interactive)
   (bookmark-in-project--has-file-name-or-error)
   (bookmark-maybe-load-default-file)
@@ -898,6 +944,7 @@ only bookmarks on the current line will be considered."
 ;;;###autoload
 (defun bookmark-in-project-jump ()
   "Jump to a bookmark in the current project."
+  (declare (important-return-value nil))
   (interactive)
   ;; Checking for a file-name isn't needed.
   (bookmark-maybe-load-default-file)
@@ -906,6 +953,7 @@ only bookmarks on the current line will be considered."
 ;;;###autoload
 (defun bookmark-in-project-jump-other-window ()
   "Jump to a bookmark in another window, see `bookmark-in-project-jump'."
+  (declare (important-return-value nil))
   (interactive)
   ;; Checking for a file-name isn't needed.
   (bookmark-maybe-load-default-file)
@@ -914,6 +962,7 @@ only bookmarks on the current line will be considered."
 ;;;###autoload
 (defun bookmark-in-project-jump-other-frame ()
   "Jump to a bookmark in another frame, see `bookmark-in-project-jump'."
+  (declare (important-return-value nil))
   (interactive)
   ;; Checking for a file-name isn't needed.
   (bookmark-maybe-load-default-file)
@@ -922,6 +971,7 @@ only bookmarks on the current line will be considered."
 ;;;###autoload
 (defun bookmark-in-project-toggle ()
   "Create or delete a bookmark on the current line."
+  (declare (important-return-value nil))
   (interactive)
 
   ;; Don't go any further if this buffer doesn't have a file-name.
@@ -957,6 +1007,7 @@ only bookmarks on the current line will be considered."
   "Delete all bookmarks in the project.
 If optional argument NO-CONFIRM is non-nil, don't ask for
 confirmation."
+  (declare (important-return-value nil))
   (interactive "P")
   (let ((proj-dir (bookmark-in-project--project-root-impl)))
     (when (or no-confirm
