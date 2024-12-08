@@ -289,6 +289,7 @@ This checks `ffip', `projectile' & `vc' root."
 
     (cond
      (result
+      (setq result (nreverse result))
       (let ((text
              (string-join
               (mapcar
@@ -297,7 +298,7 @@ This checks `ffip', `projectile' & `vc' root."
                  ;; add additional type info with properties.
                  ;; In our case the identifier is enough, so clip off any additional info.
                  (substring-no-properties text 0 (next-property-change 0 text)))
-               (reverse result))
+               result)
               ", ")))
 
         (let ((lines-rel (count-lines pos-best pos)))
