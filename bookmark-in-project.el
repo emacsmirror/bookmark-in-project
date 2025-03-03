@@ -351,7 +351,7 @@ This checks `ffip', `projectile' & `vc' root."
       (let ((delimit-iter content-beg))
         (while (string-match "[[:punct:]]+" name delimit-iter)
           (add-face-text-property
-           (match-beginning 0) (setq delimit-iter (match-end 0)) 'font-lock-delimit-face
+           (match-beginning 0) (setq delimit-iter (match-end 0)) 'font-lock-delimiter-face
            t name)))))
   name)
 

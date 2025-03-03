@@ -3,6 +3,8 @@
 Change Log
 ##########
 
+  - 2025/03/03: Fix incorrect naming of ``font-lock-delimiter-face`` face.
+
 - Version 0.2 (2023/06/04)
 
   - 2023/06/04: Fix #2 allow jumping to bookmarks from ``dired``.
