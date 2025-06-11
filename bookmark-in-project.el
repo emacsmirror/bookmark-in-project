@@ -201,7 +201,8 @@ This checks `ffip', `projectile' & `vc' root."
       ;; Note that in some cases a file will fail to parse,
       ;; typically when the file is intended for another platform (for example).
       (imenu--make-index-alist)
-    (error (message "imenu failed: %s" (error-message-string err))))
+    (error
+     (message "imenu failed: %s" (error-message-string err))))
 
   ;; As this function searches backwards to get the closest point before `pos',
   ;; account for the current `imenu' position being on the same line as the point.
@@ -413,7 +414,9 @@ Argument PROJ-DIR may be used for abbreviation."
     ;; While this should never fail, since it's a user-defined callback, fail gracefully.
     (condition-case-unless-debug err
         (funcall bookmark-in-project-name-fontify (substring-no-properties name))
-      (error (message "Setting faces failed: %s" (error-message-string err)) name)))
+      (error
+       (message "Setting faces failed: %s" (error-message-string err))
+       name)))
    (t
     name)))
 
@@ -495,7 +498,8 @@ Argument DIRECTION represents the stepping direction (in -1 1)."
           (funcall (or (bookmark-get-handler bookmark-name-or-record) 'bookmark-default-handler)
                    (bookmark-get-bookmark bookmark-name-or-record))
           t)
-      (error nil))))
+      (error
+       nil))))
 
 
 (defun bookmark-in-project--item-get-filename (item)
