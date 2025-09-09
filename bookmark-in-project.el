@@ -100,7 +100,7 @@ where the first argument is always ELEMENT, the second is a member of XS."
   (let ((index 0)
         (test-fn (or (plist-get args :test) #'equal)))
     (while (and xs (not (funcall test-fn element (car xs))))
-      (setq index (1+ index))
+      (incf index)
       (setq xs (cdr xs)))
     (and xs index)))
 
@@ -114,7 +114,7 @@ where the first argument is always ELEMENT, the second is a member of XS."
         (index 0)
         (test-fn (or (plist-get args :test) #'equal)))
     (while (and (< index xs-length) (not (funcall test-fn element (aref xs index))))
-      (setq index (1+ index)))
+      (incf index))
     (and (< index xs-length) index)))
 
 
@@ -234,7 +234,7 @@ This checks `ffip', `projectile' & `vc' root."
          ((imenu--subalist-p pair)
           (setq imstack (cons alist imstack))
           (setq alist (cdr pair))
-          (setq pos-depth (1+ pos-depth))
+          (incf pos-depth)
           (push (car pair) result-stack))
          ((number-or-marker-p (setq mark (cdr pair)))
           (let ((pos-test
@@ -251,7 +251,7 @@ This checks `ffip', `projectile' & `vc' root."
        (t
         (setq alist (car imstack))
         (setq imstack (cdr imstack))
-        (setq pos-depth (1- pos-depth))
+        (decf pos-depth)
         (pop result-stack))))
 
     ;; Loop again to calculate 'pos-next',
@@ -266,7 +266,7 @@ This checks `ffip', `projectile' & `vc' root."
          (alist
           (setq pair (car-safe alist))
           (setq alist (cdr-safe alist))
-          (setq pos-depth (1+ pos-depth))
+          (incf pos-depth)
           (cond
            ((atom pair)) ; Skip anything not a cons.
            ((imenu--subalist-p pair)
@@ -286,7 +286,7 @@ This checks `ffip', `projectile' & `vc' root."
          (t
           (setq alist (car imstack))
           (setq imstack (cdr imstack))
-          (setq pos-depth (1- pos-depth))))))
+          (decf pos-depth)))))
 
     (cond
      (result
@@ -372,7 +372,7 @@ This checks `ffip', `projectile' & `vc' root."
       (let ((index 1))
         (while (member name-unique name-ls-exists)
           (setq name-unique (format "%s~%d" name index))
-          (setq index (1+ index))))
+          (incf index)))
       name-unique)))
 
 (defun bookmark-in-project--name-impl (bm-list)
@@ -736,7 +736,7 @@ Returning the next bookmark or nil."
           (pcase-let ((`(,item . (,pos . ,invalid)) pi))
             (cond
              (invalid
-              (setq skip (1+ skip))
+              (incf skip)
               (setq filepath-current (bookmark-in-project--item-get-filename item))
               (setq pos-current pos))
              (t
@@ -770,7 +770,7 @@ Returning the next bookmark or nil."
          (t
           (incf index (length pi-list-iter)))))
       ;; Step over the file-paths.
-      (setq i (1+ i)))
+      (incf i))
     index))
 
 (defun bookmark-in-project--default-name-at-point ()
