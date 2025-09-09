@@ -762,13 +762,13 @@ Returning the next bookmark or nil."
          ((string-equal filepath-iter filepath-item)
           (setq pi-list-iter (bookmark-in-project--pi-list-sorted-by-pos pi-list-iter))
           ;; The result is never nil, no need to account for this case.
-          (setq index (+ index (bookmark-in-project--nth-elt pi pi-list-iter)))
+          (incf index (bookmark-in-project--nth-elt pi pi-list-iter))
           ;; Break.
           (setq i filepath-bm-list-pairs-len))
 
          ;; Not a matching file, step onto the next (accumulating index).
          (t
-          (setq index (+ index (length pi-list-iter))))))
+          (incf index (length pi-list-iter)))))
       ;; Step over the file-paths.
       (setq i (1+ i)))
     index))
