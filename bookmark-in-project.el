@@ -161,7 +161,8 @@ where the first argument is always ELEMENT, the second is a member of XS."
   "Run BODY with messages suppressed."
   `(let ((inhibit-message t)
          (message-log-max nil))
-     ,@body))
+     (progn
+       ,@body)))
 
 (defmacro bookmark-in-project--with-save-deferred (&rest body)
   "Execute BODY with WHERE advice on FN-ORIG temporarily enabled."
