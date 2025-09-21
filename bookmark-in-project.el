@@ -72,11 +72,6 @@ This takes and returns a string, optionally setting font properties,
 set to `identity' to use plain text."
   :type 'function)
 
-(defcustom bookmark-in-project-cycle-order 'sorted
-  "Function to call that returns the root path of the current buffer.
-A nil return value will fall back to the `default-directory'."
-  :type 'symbol)
-
 (defcustom bookmark-in-project-verbose-toggle t
   "Show messages when toggling bookmarks on/off."
 
