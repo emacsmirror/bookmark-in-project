@@ -532,6 +532,11 @@ Argument DIRECTION represents the stepping direction (in -1 1)."
      (t
       ""))))
 
+(defun bookmark-in-project--item-get-position-property (item &optional default)
+  "Return the position from a bookmark (ITEM).
+Or DEFAULT if not found."
+  (alist-get 'position item default))
+
 (defun bookmark-in-project--item-get-position (item)
   "Return the position of bookmark ITEM.
 Note that this must only run on the for bookmarks in the current buffer,
@@ -570,8 +575,8 @@ otherwise it will switch the buffer."
      ((string-lessp a-fn b-fn)
       t)
      ((string-equal a-fn b-fn)
-      (let ((a-pos (alist-get 'position a 1))
-            (b-pos (alist-get 'position b 1)))
+      (let ((a-pos (bookmark-in-project--item-get-position-property a 1))
+            (b-pos (bookmark-in-project--item-get-position-property b 1)))
         (< a-pos b-pos)))
      (t
       nil))))
@@ -603,7 +608,7 @@ When it's an integer it is, and the value of `invalid' will set."
           (setcar pi-pos-cell pos))
          (t
           ;; Set the position to the
-          (setcar pi-pos-cell (alist-get 'position item 1))
+          (setcar pi-pos-cell (bookmark-in-project--item-get-position-property item 1))
           (setcdr pi-pos-cell t)))))))
 
 (defun bookmark-in-project--pretty-item-ensure-position-for-list (pi-list)
