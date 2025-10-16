@@ -80,6 +80,10 @@ set to `identity' to use plain text."
   "Show messages when cycling between bookmarks."
   :type 'boolean)
 
+(defcustom bookmark-in-project-use-completion-ivy t
+  "Use the IVY completion framework (when available)."
+  :type 'boolean)
+
 
 ;; ---------------------------------------------------------------------------
 ;; Generic Macros / Functions
@@ -879,7 +883,7 @@ Returning the next bookmark or nil."
         (cond
          ;; Ivy gives a minor advantage that it's possible to activate bookmarks
          ;; without closing the completing read.
-         ((fboundp 'ivy-read)
+         ((and bookmark-in-project-use-completion-ivy (fboundp 'ivy-read))
           (ivy-read
            "Jump to bookmark: "
            ;; Content.

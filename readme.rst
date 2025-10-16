@@ -86,6 +86,9 @@ but may be extended to adjust default behavior.
 ``bookmark-in-project-verbose-jump``
    Show a message when jumping to next/previous bookmarks.
 
+``bookmark-in-project-use-completion-ivy``
+   Use the IVY completion framework (when available).
+
 
 Details
 =======
