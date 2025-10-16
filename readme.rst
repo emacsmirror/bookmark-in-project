@@ -62,7 +62,7 @@ but may be extended to adjust default behavior.
    Function that finds the projects root-directory from the current buffer.
    This callback takes no arguments and must return a string or nil.
 
-   The default function uses ``find-file-in-project``, ``projectile`` when available,
+   The default function uses ``find-file-in-project``, ``projectile``, ``project`` when available,
    falling back to version-control and finally ``default-directory`` if all other methods fail.
 
 ``bookmark-in-project-name`` (``'bookmark-in-project-name-default-with-context``)

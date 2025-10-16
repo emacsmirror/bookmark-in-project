@@ -175,13 +175,16 @@ where the first argument is always ELEMENT, the second is a member of XS."
 
 (defun bookmark-in-project-project-root-default ()
   "Function to find the project root from the current buffer.
-This checks `ffip', `projectile' & `vc' root."
+This checks `ffip', `projectile', `project' & `vc' root."
   (declare (important-return-value t))
   (cond
    ((fboundp 'ffip-project-root)
     (funcall #'ffip-project-root))
    ((fboundp 'projectile-project-root)
     (funcall #'projectile-project-root))
+   ((and (fboundp 'project-current) (fboundp 'project-root))
+    (let ((project (funcall #'project-current)))
+      (and project (funcall #'project-root project))))
    (t
     ;; The default directory is used in `dired',
     ;; so it's useful to check this as a possible root.
